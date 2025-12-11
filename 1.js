@@ -1,14 +1,20 @@
-// ===================================
-// 🔊 SOM DA REAÇÃO
-// ===================================
-const somReacao = new Audio("sons/reacao.mp3");
-
-// ===================================
-// ELEMENTOS BASE
-// ===================================
 const tabela = document.getElementById('tabela');
-const painelDestaque = document.getElementById('painel-destaque');
+const painelInfo = document.querySelector('.painel.info');
+const painelReacao = document.querySelector('.painel.reacao');
+const painelHistorico = document.querySelector('.painel.historico');
+const historicoLista = document.getElementById('historico-lista');
+const btnLimparHistorico = document.getElementById('limparHistorico');
+const btnToggleNeon = document.getElementById('toggleNeon');
+const paineisContainer = document.getElementById('paineis');
 
+/* ========================
+ ESTADO
+======================== */
+let elementosSelecionados = [];
+
+/* ========================
+ DADOS ELEMENTOS
+======================== */
 const dadosElementos = {
     'H': {
         nome: 'Hidrogênio',
@@ -1201,9 +1207,9 @@ const dadosElementos = {
     }
 };
 
-// ================================
-// BANCO DE DADOS DE REAÇÕES QUÍMICAS
-// ================================
+/* ========================
+ BANCO DE REAÇÕES
+======================== */
 const bancoReacoes = {
   // Hidrogênio
   "H+O": { produto: "H₂O", equacao: "2H₂ + O₂ → 2H₂O", tipo: "Síntese", descricao: "Formação de água por combinação de hidrogênio e oxigênio (reação explosiva)." },
@@ -1400,24 +1406,22 @@ const bancoReacoes = {
   // muitas reações são hipotéticas ou não observadas em quantidades mensuráveis, por isso foram omitidas.
 };
 
-// ===================================
-// CONTROLE
-// ===================================
-let elementosSelecionados = [];
+function formatarCategoria(categoria) {
+  return String(categoria || "").toLowerCase().replace(/[^a-z0-9-]/g, "-");
+}
 
-// ===================================
-// CRIAR ELEMENTOS
-// ===================================
+/* ========================
+ CRIAR ELEMENTOS NA TABELA
+======================== */
 function criarElemento(simbolo) {
   const info = dadosElementos[simbolo];
   if (!info) return;
 
   const div = document.createElement('div');
   div.className = `elemento ${formatarCategoria(info.categoria)}`;
-  div.style.gridColumn = info.posicao.col;
-  div.style.gridRow = info.posicao.row;
+  if (info.posicao && info.posicao.col) div.style.gridColumn = info.posicao.col;
+  if (info.posicao && info.posicao.row) div.style.gridRow = info.posicao.row;
   div.tabIndex = 0;
-
   div.dataset.simbolo = simbolo;
 
   div.innerHTML = `
@@ -1428,35 +1432,33 @@ function criarElemento(simbolo) {
     </div>
   `;
 
-  div.onclick = (e) => {
+  div.addEventListener('click', (e) => {
     e.stopPropagation();
-    mostrarPainel(info, simbolo);
-  };
+    mostrarPainelInfo(info, simbolo);
+    paineisContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
 
-  div.addEventListener("contextmenu", (e) => {
+  div.addEventListener('contextmenu', (e) => {
     e.preventDefault();
     toggleSelecao(simbolo, div);
+    paineisContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
 
   tabela.appendChild(div);
 }
 
-// ===================================
-// FORMATAR CATEGORIA
-// ===================================
-function formatarCategoria(categoria) {
-  return categoria.toLowerCase().replace(/[^a-z0-9-]/g, "-");
+function popularTabela() {
+  Object.keys(dadosElementos).forEach(simbolo => criarElemento(simbolo));
 }
 
-// ===================================
-// PAINEL DE INFORMAÇÃO
-// ===================================
-function mostrarPainel(info, simbolo) {
-  painelDestaque.classList.remove('vazio');
-
-  painelDestaque.innerHTML = `
+/* ========================
+ PAINEL INFORMAÇÕES
+======================== */
+function mostrarPainelInfo(info, simbolo) {
+  painelInfo.classList.remove('vazio');
+  painelInfo.innerHTML = `
     <div class="painel-conteudo">
-      <button id="fechar-painel" class="fechar-painel">&times;</button>
+      <button class="fechar-painel" id="fechar-painel">&times;</button>
       <div class="painel-info">
         <div class="painel-simbolo">${simbolo}</div>
         <div class="painel-dados">
@@ -1469,88 +1471,78 @@ function mostrarPainel(info, simbolo) {
       </div>
     </div>
   `;
-
-  painelDestaque.classList.add('ativo');
-  document.getElementById('fechar-painel').onclick = () => fecharPainel();
+  const btn = painelInfo.querySelector('#fechar-painel');
+  if (btn) btn.onclick = fecharPainelInfo;
+}
+function fecharPainelInfo() {
+  painelInfo.classList.add('vazio');
+  painelInfo.innerHTML = 'Clique em um elemento para ver os detalhes aqui 👇';
 }
 
-function fecharPainel() {
-  painelDestaque.classList.remove('ativo');
-  setTimeout(() => {
-    painelDestaque.innerHTML = 'Clique em um elemento para ver os detalhes aqui 👇';
-    painelDestaque.classList.add('vazio');
-  }, 300);
-}
-
-// ===================================
-// PAINEL DE REAÇÃO
-// ===================================
-const painelReacao = document.getElementById("painelReacao");
-
-// ===================================
-// SELEÇÃO E TOGGLE
-// ===================================
+/* ========================
+ SELEÇÃO / REAÇÃO
+======================== */
 function toggleSelecao(simbolo, div) {
-  if (div.classList.contains("selecionado")) {
-    div.classList.remove("selecionado");
+  if (div.classList.contains('selecionado')) {
+    div.classList.remove('selecionado');
     elementosSelecionados = elementosSelecionados.filter(s => s !== simbolo);
     return;
   }
-
   if (elementosSelecionados.length < 2) {
-    div.classList.add("selecionado");
+    div.classList.add('selecionado');
     elementosSelecionados.push(simbolo);
   }
-
   if (elementosSelecionados.length === 2) {
     realizarReacao();
   }
 }
 
-// ===================================
-// REALIZAR REAÇÃO 
-// ===================================
 function realizarReacao() {
   if (elementosSelecionados.length !== 2) return;
+  const [A, B] = [...elementosSelecionados];
 
-  // Ordena os elementos para criar a chave correta
-  const chave = [...elementosSelecionados].sort().join("+");
-  const reacao = bancoReacoes[chave];
+  const k1 = `${A}+${B}`;
+  const k2 = `${B}+${A}`;
+  const reacao = bancoReacoes[k1] || bancoReacoes[k2] || null;
 
-  // Adiciona efeito visual nos elementos
-  const divA = document.querySelector(`.elemento[data-simbolo="${elementosSelecionados[0]}"]`);
-  const divB = document.querySelector(`.elemento[data-simbolo="${elementosSelecionados[1]}"]`);
-
+  // efeitos visuais
+  const divA = document.querySelector(`.elemento[data-simbolo="${A}"]`);
+  const divB = document.querySelector(`.elemento[data-simbolo="${B}"]`);
   if (divA) divA.classList.add('reagindo');
   if (divB) divB.classList.add('reagindo');
 
-  // Remove efeito após animação
-  setTimeout(() => {
+  setTimeout(()=> {
     if (divA) divA.classList.remove('reagindo');
     if (divB) divB.classList.remove('reagindo');
   }, 750);
 
-  mostrarReacaoPainel(reacao);
+  mostrarPainelReacao(reacao, A, B);
+  adicionarHistorico([A,B], reacao);
 
+  // limpar seleção
   elementosSelecionados = [];
-  document.querySelectorAll(".selecionado").forEach(el => el.classList.remove("selecionado"));
+  document.querySelectorAll('.elemento.selecionado').forEach(el => el.classList.remove('selecionado'));
+
+  // scroll suave
+  paineisContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-// ===================================
-// EXIBIR REAÇÃO
-// ===================================
-function mostrarReacaoPainel(reacao) {
-  painelReacao.classList.remove("vazio");
-  painelReacao.classList.add("ativo");
+/* ========================
+ PAINEL REACAO
+======================== */
+
+function mostrarPainelReacao(reacao, A, B) {
+  painelReacao.classList.remove('vazio');
 
   if (reacao) {
     painelReacao.innerHTML = `
       <h2>⚡ Reação Encontrada</h2>
+      <p><strong>${A} + ${B} → ${reacao.produto}</strong></p>
       <p><strong>Equação:</strong> ${reacao.equacao}</p>
-      <p><strong>Produto:</strong> ${reacao.produto}</p>
       <p><strong>Tipo:</strong> ${reacao.tipo}</p>
-      <p style="margin:0px">${reacao.descricao}</p>
+      <p>${reacao.descricao}</p>
     `;
+    
   } else {
     painelReacao.innerHTML = `
       <h2>❌ Reação Não Encontrada</h2>
@@ -1559,14 +1551,88 @@ function mostrarReacaoPainel(reacao) {
   }
 }
 
-// ===================================
-// INICIAR TABELA
-// ===================================
-Object.keys(dadosElementos).forEach(simbolo => criarElemento(simbolo));
 
-// ===================================
-// MODO NEON
-// ===================================
-document.getElementById("toggleNeon").onclick = () => {
-  document.body.classList.toggle("neon");
-};
+/* ========================
+ PAINEL REACAO
+======================== */
+
+// Lista que vai guardar o histórico
+let historicoReacoes = [];
+
+// Carrega o histórico
+function carregarHistorico() {
+  const salvo = localStorage.getItem("historicoReacoes");
+
+  //transforma de texto para objeto se nao cria uma vazia
+  historicoReacoes = salvo ? JSON.parse(salvo) : [];
+
+  mostrarHistorico();
+}
+
+// Adiciona uma nova reação ao histórico
+function adicionarHistorico(elementos, reacao) {
+  const item = {
+    elementos: elementos.join(" + "),
+    resultado: reacao ? reacao.produto : "Nenhuma reação encontrada",
+    equacao: reacao ? reacao.equacao : "—",
+    data: new Date().toLocaleString("pt-BR")
+  };
+
+  // Coloca o item no começo da lista
+  historicoReacoes.unshift(item);
+
+  // Salva no navegador
+  localStorage.setItem("historicoReacoes", JSON.stringify(historicoReacoes));
+
+  mostrarHistorico();
+}
+
+// Mostra a lista de reações no HTML
+function mostrarHistorico() {
+  if (!historicoLista) return;
+
+  if (historicoReacoes.length === 0) {
+    historicoLista.innerHTML = "<p>Nenhuma reação realizada ainda.</p>";
+    return;
+  }
+
+  historicoLista.innerHTML = historicoReacoes
+    .map(item => `
+      <div class="item-historico">
+        <p><strong>${item.elementos}</strong></p>
+        <p>${item.resultado}</p>
+        <p>${item.equacao}</p>
+        <small>${item.data}</small>
+      </div>
+    `)
+    .join("");
+}
+
+// Botão para limpar tudo
+if (btnLimparHistorico) {
+  btnLimparHistorico.addEventListener("click", () => {
+    if (!confirm("Deseja realmente apagar todo o histórico?")) return;
+
+    historicoReacoes = [];
+    localStorage.removeItem("historicoReacoes");
+    mostrarHistorico();
+  });
+}
+
+
+/* ========================
+ MODO NEON
+======================== */
+if (btnToggleNeon) {
+  btnToggleNeon.addEventListener('click', () => {
+    document.body.classList.toggle('neon');
+  });
+}
+
+/* ========================
+ INICIALIZAÇÃO
+======================== */
+document.addEventListener('DOMContentLoaded', () => {
+  popularTabela();
+  carregarHistorico();
+});

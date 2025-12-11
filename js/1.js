@@ -1,15 +1,6 @@
-/* ============================================================
- teste.js — arquivo único final
- ============================================================ */
-
-/* ========================
- SONS
-======================== */
-const somReacao = new Audio("sons/confetti.mp3");
-
 const tabela = document.getElementById('tabela');
-const painelInfo = document.querySelector('.painel.info');         // painel-destaque
-const painelReacao = document.querySelector('.painel.reacao');     // painelReacao
+const painelInfo = document.querySelector('.painel.info');
+const painelReacao = document.querySelector('.painel.reacao');
 const painelHistorico = document.querySelector('.painel.historico');
 const historicoLista = document.getElementById('historico-lista');
 const btnLimparHistorico = document.getElementById('limparHistorico');
@@ -20,10 +11,9 @@ const paineisContainer = document.getElementById('paineis');
  ESTADO
 ======================== */
 let elementosSelecionados = [];
-let historicoReacoes = [];
 
 /* ========================
- DADOS ELEMENTOS (EXEMPLO)
+ DADOS ELEMENTOS
 ======================== */
 const dadosElementos = {
     'H': {
@@ -1416,23 +1406,8 @@ const bancoReacoes = {
   // muitas reações são hipotéticas ou não observadas em quantidades mensuráveis, por isso foram omitidas.
 };
 
-/* ========================
- UTILITÁRIOS
-======================== */
 function formatarCategoria(categoria) {
   return String(categoria || "").toLowerCase().replace(/[^a-z0-9-]/g, "-");
-}
-function tocarSomClick() {
-  if (somClique && typeof somClique.play === "function") {
-    somClique.currentTime = 0;
-    somClique.play().catch(()=>{/*ignore*/});
-  }
-}
-function tocarSomReacao() {
-  if (somReacao && typeof somReacao.play === "function") {
-    somReacao.currentTime = 0;
-    somReacao.play().catch(()=>{/*ignore*/});
-  }
 }
 
 /* ========================
@@ -1555,12 +1530,6 @@ function realizarReacao() {
 /* ========================
  PAINEL REACAO
 ======================== */
-function tocarSomReacao() {
-  somReacao.currentTime = 0;
-  somReacao.play().catch(err => {
-    console.log("Som bloqueado até interação do usuário.");
-  });
-}
 
 function mostrarPainelReacao(reacao, A, B) {
   painelReacao.classList.remove('vazio');
@@ -1583,57 +1552,69 @@ function mostrarPainelReacao(reacao, A, B) {
   }
 }
 
-/* ========================
- HISTÓRICO 
-======================== */
+// Lista que vai guardar o histórico
+let historicoReacoes = [];
+
+// Carrega o histórico salvo no navegador
 function carregarHistorico() {
-  try {
-    const raw = localStorage.getItem('historicoReacoes');
-    historicoReacoes = raw ? JSON.parse(raw) : [];
-  } catch(e) {
-    historicoReacoes = [];
-    console.warn('Erro lendo histórico', e);
-  }
-  atualizarHistorico();
-}
-function adicionarHistorico(elementos, reacao) {
-  const elems = [...elementos].sort();
-  const item = {
-    elementos: elems.join(' + '),
-    resultado: reacao ? reacao.produto : 'Nenhuma reação encontrada',
-    equacao: reacao ? reacao.equacao : '—',
-    data: new Date().toLocaleString('pt-BR')
-  };
-  historicoReacoes.unshift(item);
-  if (historicoReacoes.length > 200) historicoReacoes.length = 200;
-  try { localStorage.setItem('historicoReacoes', JSON.stringify(historicoReacoes)); } catch(e){ console.warn(e); }
-  atualizarHistorico();
-}
-function atualizarHistorico() {
-  if (!historicoLista) return;
-  if (historicoReacoes.length === 0) {
-    historicoLista.innerHTML = '<p>Nenhuma reação realizada ainda.</p>';
-    return;
-  }
-  historicoLista.innerHTML = historicoReacoes.map(h => `
-    <div class="item-historico">
-      <p><strong>${h.elementos}</strong></p>
-      <p><em>${h.resultado}</em></p>
-      <p>${h.equacao}</p>
-      <small>${h.data}</small>
-    </div>
-  `).join('');
+  const salvo = localStorage.getItem("historicoReacoes");
+
+  // Se existir algo salvo, transforma de texto para objeto. Senão, cria lista vazia.
+  historicoReacoes = salvo ? JSON.parse(salvo) : [];
+
+  mostrarHistorico();
 }
 
-/* limpar histórico botão */
+// Adiciona uma nova reação ao histórico
+function adicionarHistorico(elementos, reacao) {
+  const item = {
+    elementos: elementos.join(" + "),
+    resultado: reacao ? reacao.produto : "Nenhuma reação encontrada",
+    equacao: reacao ? reacao.equacao : "—",
+    data: new Date().toLocaleString("pt-BR")
+  };
+
+  // Coloca o item no começo da lista
+  historicoReacoes.unshift(item);
+
+  // Salva no navegador
+  localStorage.setItem("historicoReacoes", JSON.stringify(historicoReacoes));
+
+  mostrarHistorico();
+}
+
+// Mostra a lista de reações no HTML
+function mostrarHistorico() {
+  if (!historicoLista) return;
+
+  if (historicoReacoes.length === 0) {
+    historicoLista.innerHTML = "<p>Nenhuma reação realizada ainda.</p>";
+    return;
+  }
+
+  historicoLista.innerHTML = historicoReacoes
+    .map(item => `
+      <div class="item-historico">
+        <p><strong>${item.elementos}</strong></p>
+        <p>${item.resultado}</p>
+        <p>${item.equacao}</p>
+        <small>${item.data}</small>
+      </div>
+    `)
+    .join("");
+}
+
+// Botão para limpar tudo
 if (btnLimparHistorico) {
-  btnLimparHistorico.addEventListener('click', () => {
-    if (!confirm('Tem certeza que deseja limpar todo o histórico?')) return;
+  btnLimparHistorico.addEventListener("click", () => {
+    if (!confirm("Deseja realmente apagar todo o histórico?")) return;
+
     historicoReacoes = [];
-    try { localStorage.removeItem('historicoReacoes'); } catch(e) {}
-    atualizarHistorico();
+    localStorage.removeItem("historicoReacoes");
+    mostrarHistorico();
   });
 }
+
 
 /* ========================
  MODO NEON

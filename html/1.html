@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Tabela do Boto</title>
+<link rel="stylesheet" href="/css/1.css" />
+</head>
+<body>
+<header>
+<h1>Tabela Periódica do Boto</h1>
+<a href="/html/index.html">Página Inicial</a>
+<button id="toggleNeon" class="btn-modo">Modo Neon</button>
+</header>
+
+<!-- ============================ -->
+<!-- PAINEIS -->
+<!-- ============================ -->
+<div id="paineis" class="paineis-container">
+<div class="painel info" id="painel-destaque">Clique em um elemento para ver os detalhes aqui 👇</div>
+<div class="painel reacao" id="painelReacao">Clique direito em dois elementos para ver a reação aqui ⚡</div>
+<div class="painel historico" id="painelHistorico">
+<h2>Histórico de Reações</h2>
+<div class="scroll-conteudo" id="historico-lista">Nenhuma reação realizada ainda.</div>
+<button id="limparHistorico">Limpar Histórico</button>
+</div>
+</div>
+
+<!-- ============================ -->
+<!-- TABELA -->
+<!-- ============================ -->
+<main class="tabela-container" id="tabela"></main>
+
+<!-- ============================ -->
+<!-- VÍDEO DE FUNDO -->
+<!-- ============================ -->
+<video autoplay muted loop id="video">
+<source 
+src="/video/Chemical Molecular Background in Black - Video 515208 - Royalty Free Background and Footage (1080p, h264).mp4" 
+type="video/mp4">
+</video>
+
+<!-- ============================ -->
+<!-- JAVASCRIPT -->
+<!-- ============================ -->
+<script src="/js/1.js"></script>
+</body>
+</html>

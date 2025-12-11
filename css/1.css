@@ -1,0 +1,288 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&family=Roboto:wght@300;400;700&display=swap');
+
+:root {
+  --cor-fundo-principal: #ffffff;
+  --cor-rosa-pastel: #f7e6e6;
+  --cor-azul-suave: #b0e0e6;
+  --cor-texto-principal: #0f0f0f;
+  --cor-borda-elemento: #ffffff;
+  --fonte-simbolo: 'Arial Black', sans-serif;
+  --fonte-geral: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  --cor-painel-fundo: #ffffff;
+  --cor-botao-fechar: #ff3b3b;
+  --sombra:#000000;
+  --largura-tabela-max: 2000px;
+  --largura-tabela-preferida: 95%;
+  --gap-tabela: 10px;
+
+  --selecao-borda-cor: #00b7ff;
+  --selecao-borda-largura: 3px;
+  --selecao-glow: 0 0 12px rgba(0,183,255,0.65);
+
+  --painel-padding: 20px;
+  --transicao-rapida: 0.25s ease;
+}
+
+/* cor dos negocio neon */
+body.neon {
+  --cor-fundo-principal: #06020a;
+  --cor-rosa-pastel: rgba(22, 3, 78, 0.85);
+  --cor-azul-suave: #7e1cfd;
+  --cor-texto-principal: #e8faff;
+  --cor-borda-elemento: #00e0ff;
+  --cor-painel-fundo: rgba(10, 10, 20, 0.85);
+  --cor-botao-fechar: #ff008c;
+  --sombra:#ffffff;
+
+  --selecao-borda-cor: #ff00ff;
+  --selecao-borda-largura: 3px;
+  --selecao-glow: 0 0 18px rgba(255,0,255,0.7);
+}
+
+* { box-sizing: border-box; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+html, body { height: 100%; margin: 0; padding: 0; scroll-behavior: smooth; }
+body {
+  font-family: 'Orbitron', sans-serif;
+  background-color: var(--cor-fundo-principal);
+  color: var(--cor-texto-principal);
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  transition: background-color .35s ease, color .35s ease;
+}
+
+/* ============================== */
+/* HEADER */
+/* ============================== */
+header {
+  background-color: var(--cor-rosa-pastel);
+  padding: 20px 0;
+  text-align: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1.5rem;
+}
+
+header h1 {
+  margin: 0;
+  font-weight: 600;
+  font-size: 2.5rem;
+  letter-spacing: 2px;
+  color: #ffffff;
+  text-shadow: 0 0 10px #00e0ff, 0 0 30px #00e0ff;
+}
+
+header a, header button {
+  display: inline-block;
+  margin: 10px 5px 0;
+  text-decoration: none;
+  color: #ffffff;
+  font-weight: 500;
+  padding: 10px 18px;
+  border-radius: 22px;
+  box-shadow: 0 2px 5px var(--sombra);
+  font-style: oblique;
+  text-shadow: 0 0 3px rgb(0, 0, 0);
+  background: none;
+  border: 2px solid #fff;
+  cursor: pointer;
+  transition: transform .2s ease;
+}
+header a:hover, header button:hover { transform: scale(1.05); }
+
+/* ============================== */
+/* PAINEIS */
+/* ============================== */
+.paineis-container {
+  width: var(--largura-tabela-preferida);
+  max-width: var(--largura-tabela-max);
+  margin: 0 auto 20px auto;
+  padding: 0 10px;
+  display: grid;
+  grid-template-columns: 40% 40% 20%;
+  gap: 18px;
+  align-items: start;
+}
+
+/* painel base */
+.painel {
+  background-color: var(--cor-painel-fundo);
+  color: var(--cor-texto-principal);
+  border-radius: 12px;
+  padding: var(--painel-padding);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  transition: all .35s ease;
+  min-height: 80px; 
+  overflow: hidden;
+}
+
+.painel.info { /* painel de informações */ }
+.painel.reacao { /* painel de reações */ }
+.painel.historico { /* painel histórico */ }
+.painel.vazio { font-style: italic; color: #555; opacity: 0.9; display: flex; align-items: center; justify-content: center; min-height: 120px; }
+
+/* ============================== */
+/* TABELA PERIÓDICA */
+/* ============================== */
+.tabela-container {
+  background-color: rgba(255, 255, 255, 0.5);
+  display: grid;
+  grid-template-columns: repeat(18, 1fr);
+  grid-template-rows: repeat(9, auto);
+  gap: var(--gap-tabela);
+  width: var(--largura-tabela-preferida);
+  max-width: var(--largura-tabela-max);
+  margin: 20px auto 60px auto;
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  transition: all .35s ease;
+}
+
+.elemento {
+  border: 3px solid var(--cor-borda-elemento);
+  padding: 8px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
+  width: 80px;
+  height: 90px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  border-radius: 5px;
+  overflow: hidden;
+  position: relative;
+  box-sizing: border-box;
+  background: linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(245,245,245,0.95) 100%);
+}
+
+.elemento:hover {
+  box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.15);
+  border-color: #9f39ff;
+  transform: scale(1.05);
+  filter: brightness(1.02);
+  z-index: 10;
+}
+
+.numero-atomico { font-size: 0.8em; color: var(--cor-texto-principal); font-weight: 900; align-self: flex-start; margin-bottom: 4px; }
+.simbolo { font-size: 1.8em; font-family: var(--fonte-simbolo); line-height: 1; font-weight: 700; text-align: center; margin-top: 4px; }
+.nome-elemento { font-size: 0.75em; color: #111; font-weight: 600; text-align: center; width: 100%; margin-top: 4px; line-height: 1.1; }
+
+/* ============================== */
+/* CORES DOS ELEMENTOS */
+/* ============================== */
+.metal-alcalino { background: linear-gradient(to bottom, #ffffff 0%, #be6923 100%); color: #000000; }
+.metal-alcalino-terra { background: linear-gradient(to bottom, #ffffff 0%, #996a44 100%); color: #000000; }
+.metal-transicao { background: linear-gradient(to bottom, #ffffff 0%, #f30404 100%); color: #000000; }
+.metal-pos-transicao { background: linear-gradient(to bottom, #ffffff 0%, #adb7bb 100%); color: #000000; }
+.semi-metal { background: linear-gradient(to bottom, #ffffff 0%, #586958 100%); color: #000000; }
+.ametal { background: linear-gradient(to bottom, #ffffff 0%, #f7ddc8 100%); color: #000000; }
+.gas-nobre { background: linear-gradient(to bottom, #ffffff 0%, #5900ff 100%); color: #000000; }
+.lantanideo { background: linear-gradient(to bottom, #ffffff 0%, #7c048b 100%); color: #000000; }
+.desconhecido { background: linear-gradient(to bottom, #ffffff 0%, #000000 100%); color: #000000; }
+.actinideos { background: linear-gradient(to bottom, #ffffff 0%, #1c41bb 100%); color: #000000; }
+.halogenio { background: linear-gradient(to bottom, #ffffff 0%, rgb(2, 200, 207) 100%); color: #000000; }
+
+/* ============================== */
+/* PAINEL INTERNO */
+/* ============================== */
+.painel-conteudo { position: relative; display: flex; flex-direction: column; align-items: center; }
+.fechar-painel {
+  position: absolute; top: 10px; right: 10px;
+  background-color: var(--cor-botao-fechar);
+  color: #fff; border: none; border-radius: 50%; width: 30px; height: 30px;
+  font-size: 18px; font-weight: bold; cursor: pointer; transition: background 0.3s ease;
+}
+.fechar-painel:hover { background-color: #d10000; }
+
+.painel-info { display:flex; gap: 20px; flex-wrap:wrap; align-items:center; justify-content:center; }
+.painel-simbolo { font-size: 5em; font-weight: 900; color: #4a4a4a; text-shadow: 2px 2px 4px rgba(0,0,0,0.2); }
+.painel-dados { text-align:left; font-size:1em; max-width:400px; }
+.painel-dados h1 { margin-top:0; font-size:1.4em; color:#333; }
+
+/* seleção e reação */
+.elemento.selecionado {
+  outline: none;
+  border: var(--selecao-borda-largura) solid var(--selecao-borda-cor);
+  box-shadow: var(--selecao-glow);
+  transform: scale(1.06);
+  z-index: 50;
+  animation: pulsarSelecao 1.6s ease-in-out infinite;
+}
+@keyframes pulsarSelecao {
+  0% { box-shadow: 0 0 8px rgba(0,0,0,0); transform: scale(1.03); }
+  50% { box-shadow: var(--selecao-glow); transform: scale(1.07); }
+  100% { box-shadow: 0 0 8px rgba(0,0,0,0); transform: scale(1.03); }
+}
+
+.reagindo { animation: brilhoReacao 0.75s ease-out; }
+@keyframes brilhoReacao {
+  0% { box-shadow: 0 0 0 rgba(0,0,0,0); transform: scale(1); }
+  30% { box-shadow: 0 0 20px var(--cor-azul-suave); transform: scale(1.04); }
+  100% { box-shadow: 0 0 0 rgba(0,0,0,0); transform: scale(1); }
+}
+
+/* AJUSTES NEON */
+body.neon h1, body.neon h2, body.neon h3 { text-shadow: 0 0 8px rgb(196, 5, 5), 0 0 15px var(--cor-azul-suave); }
+body.neon .elemento { box-shadow: 0 0 8px rgba(0,0,0,0.15); border-color: var(--cor-azul-suave); color: #ffffff; background: linear-gradient(180deg, rgba(10,10,18,0.6) 0%, rgba(98, 0, 255, 0.55) 100%); }
+body.neon .elemento:hover { transform: scale(1.08); box-shadow: 0 0 16px var(--cor-azul-suave), 0 0 36px var(--cor-rosa-pastel); }
+body.neon .elemento.selecionado { border-color: var(--selecao-borda-cor); box-shadow: var(--selecao-glow); }
+body.neon .painel { background: var(--cor-painel-fundo); box-shadow: 0 0 18px rgba(0,0,0,0.2), 0 0 12px rgba(0, 200, 255, 0.06) inset; border-color: var(--cor-borda-elemento); }
+
+/* ============================== */
+/* RESPONSIVIDADE */
+/* ============================== */
+@media (max-width: 1200px) {
+  .tabela-container { grid-template-columns: repeat(9, 1fr); }
+  .paineis-container { width: 92%; grid-template-columns: 1fr; } /* stack on narrower screens */
+  .paineis-container .painel { max-width: 100%; }
+}
+
+@media (max-width: 900px) {
+  .paineis-container { grid-template-columns: 1fr; gap: 12px; }
+  .tabela-container { grid-template-columns: repeat(9, 1fr); padding: 8px; }
+  .elemento { transform: scale(0.95); }
+}
+
+@media (max-width: 600px) {
+  .tabela-container { grid-template-columns: repeat(6, 1fr); }
+  .elemento { width: 60px; height: 70px; }
+}
+
+/* VIDEO DE FUNDO */
+#video {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  object-fit: cover; z-index: -1; filter: brightness(0.9); transition: filter 1s ease;
+}
+
+
+/* ============================================== */
+/* FIXAR ALTURA DOS 3 PAINÉIS + SCROLL INTERNO    */
+/* ============================================== */
+
+.paineis-container .painel {
+    height: 350px;           /* tamanho fixo */
+    overflow: hidden;        /* pro painel não cresce */
+    display: flex;
+    flex-direction: column;
+}
+
+.paineis-container .painel .painel-conteudo,
+.paineis-container .painel .scroll-conteudo {
+    overflow-y: auto;        /* pro conteudo interno rola */
+    padding-right: 10px;
+    flex: 1;
+}
+
+/* scrollbar estilizado  */
+.paineis-container .painel .scroll-conteudo::-webkit-scrollbar {
+    width: 6px;
+}
+
+.paineis-container .painel .scroll-conteudo::-webkit-scrollbar-thumb {
+    background: #777;
+    border-radius: 6px;
+}

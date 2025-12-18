@@ -1,11 +1,8 @@
 /* =============================== */
 /* TABELA DO BOTO — PÁGINA INICIAL */
 /* =============================== */
-
-/* IMPORTA UMA FONTE FUTURISTA */
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&family=Roboto:wght@300;400;700&display=swap');
 
-/* ZERA MARGENS E DEFINE ESTILO GERAL */
 * {
   margin: 0;
   padding: 0;
@@ -78,7 +75,7 @@ h2 {
 }
 
 /* =============================== */
-/* BOTÃO "IR PARA A TABELA" */
+/* BOTÃO */
 /* =============================== */
 a {
   display: inline-block;

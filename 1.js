@@ -1619,6 +1619,44 @@ if (btnLimparHistorico) {
   });
 }
 
+function corrigir() {
+  var pontos = 0;
+  var questao = 0;
+
+  if (document.querySelector('input[name="q1"]:checked') &&
+      document.querySelector('input[name="q1"]:checked').value == 0) {
+    pontos = pontos + 1;
+    questao = questao + 1;
+  }
+
+  if (document.querySelector('input[name="q2"]:checked') &&
+      document.querySelector('input[name="q2"]:checked').value == 1) {
+    pontos = pontos + 1;
+    questao = questao + 1;
+  }
+
+  if (document.querySelector('input[name="q3"]:checked') &&
+      document.querySelector('input[name="q3"]:checked').value == 0) {
+    pontos = pontos + 1;
+    questao = questao + 1;
+  }
+
+  if (document.querySelector('input[name="q4"]:checked') &&
+      document.querySelector('input[name="q4"]:checked').value == 0) {
+    pontos = pontos + 1;
+    questao = questao + 1;
+  }
+
+  if (document.querySelector('input[name="q5"]:checked') &&
+      document.querySelector('input[name="q5"]:checked').value == 1) {
+    pontos = pontos + 1;
+    questao = questao + 1;
+  }
+
+  document.getElementById("resultado").innerHTML =
+    "Você acertou " + pontos + " de " + questao + " perguntas.";
+}
+
 
 /* ========================
  MODO NEON

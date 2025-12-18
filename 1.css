@@ -185,6 +185,58 @@ header a:hover, header button:hover { transform: scale(1.05); }
 .actinideos { background: linear-gradient(to bottom, #ffffff 0%, #1c41bb 100%); color: #000000; }
 .halogenio { background: linear-gradient(to bottom, #ffffff 0%, rgb(2, 200, 207) 100%); color: #000000; }
 
+/* ===== QUIZ ===== */
+.quiz {
+  max-width: 500px;
+  margin: 30px auto 80px auto;
+  margin-bottom: 250px;
+  padding: 20px;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  background: #fafafa;
+  font-family: Arial, sans-serif;
+}
+
+.quiz-titulo {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.quiz-pergunta {
+  margin-bottom: 15px;
+}
+
+.quiz-pergunta p {
+  font-weight: bold;
+}
+
+.quiz-pergunta label {
+  display: block;
+  margin-left: 10px;
+}
+
+.quiz-botao {
+  display: block;
+  margin: 20px auto;
+  padding: 8px 16px;
+  cursor: pointer;
+}
+
+.quiz-resultado {
+  text-align: center;
+  font-weight: bold;
+  margin-top: 15px;
+}
+
+.rodape-texto {
+  text-align: center;
+  font-size: 14px;
+  color: #666;
+  margin-top: 40px;
+  margin-bottom: 20px; /* distância da borda inferior */
+  font-family: Arial, sans-serif;
+}
+
 /* ============================== */
 /* PAINEL INTERNO */
 /* ============================== */
